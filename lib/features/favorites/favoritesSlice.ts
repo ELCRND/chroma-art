@@ -25,16 +25,12 @@ export const favoritesSlice = createAppSlice({
         toast("Добавлено в избранное");
       }
     ),
-    removeFavoritesFromLS: create.reducer(
-      (state, action: PayloadAction<string>) => {
-        const newState = state.products.filter(
-          (f) => f.productId !== action.payload
-        );
-        localStorage.setItem("favorites", JSON.stringify(newState));
-        state.products = newState;
-        toast("Удалено из избранного");
-      }
-    ),
+    removeFavoritesFromLS: create.reducer((state, action: PayloadAction<string>) => {
+      const newState = state.products.filter((f) => f.productId !== action.payload);
+      localStorage.setItem("favorites", JSON.stringify(newState));
+      state.products = newState;
+      toast("Удалено из избранного");
+    }),
 
     setInitialStateFromLS: create.reducer(
       (state, action: PayloadAction<IFavoritesProducts[]>) => {
@@ -47,13 +43,13 @@ export const favoritesSlice = createAppSlice({
   selectors: {
     selectFavorites: (state) => state,
     selectFavoritesId: (state) => state.products.map((f) => f.productId),
-    selectFavoritesIsLoading: (state) => state.products.map((f) => f.productId),
+    selectFavoritesIsLoading: (state) => state.isLoading,
   },
 
   extraReducers: (builder) => {
     /*
       initial state from DB,
-      if DB returned <empty> try get state from LS, 
+      if DB return <empty> try get state from LS, 
       if LS <empty> return []
     */
     builder.addCase(getFavorites.pending, (state) => {
@@ -99,10 +95,7 @@ export const favoritesSlice = createAppSlice({
   },
 });
 
-export const {
-  addToFavoritesInLS,
-  removeFavoritesFromLS,
-  setInitialStateFromLS,
-} = favoritesSlice.actions;
+export const { addToFavoritesInLS, removeFavoritesFromLS, setInitialStateFromLS } =
+  favoritesSlice.actions;
 export const { selectFavorites, selectFavoritesId, selectFavoritesIsLoading } =
   favoritesSlice.selectors;
